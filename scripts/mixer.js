@@ -98,7 +98,8 @@ function Mixer (client) {
     Tone.Transport.bpm.rampTo(128, 2)
   }
 
-  this.tweak = (ch, knob, val) => {
+  this.tweak = (_ch, knob, val) => {
+    let ch = _ch - 9 // HACK based on my mapping
     if ((knob < 0 || knob >= 8) && (knob < 64 || knob >= 72)) { return }
     const id = Object.keys(this.knobs)[knob % 8]
     if (!this.knobs[id]) { console.warn('Mixer', 'Unknown knob'); return }

@@ -38,16 +38,28 @@ function Client () {
     this.acels.set('Play', 'Next', ']', () => { this.modChannel(1) })
     this.acels.set('Play', 'Prev', '[', () => { this.modChannel(-1) })
 
+
+    this.acels.set('Play', 'Run', 'Space', () => {
+      this.io.sendClockStart()
+      let result = Tone.Transport.toggle().state
+    })
+
     this.acels.install(window)
     this.mixer.install(this.el)
     this.rack.install(this.el)
     this.io.install(this.el)
   }
 
+  let io = this.io
   this.start = (bpm = 120) => {
     console.info('Client', 'Starting..')
     console.info(`${this.acels}`)
     this.mixer.setBpm(bpm)
+    let spp = 0
+    Tone.Transport.scheduleRepeat(function(time) {
+      io.sendClockBeat()
+    }, '8i') // Tone has 192 ppq. we need 24 ppq so 192/24 = 8
+
   }
 
   this.modChannel = (mod) => {
